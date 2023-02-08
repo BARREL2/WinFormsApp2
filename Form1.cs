@@ -1,7 +1,11 @@
+using System.Windows.Forms;
+using System;
+
 namespace WinFormsApp2
 {
     public partial class Form1 : Form
     {
+        private readonly BindingSource _bindingSource = new BindingSource();
         private readonly Dictionary<string, bool> _textBoxValues = new Dictionary<string, bool>
         {
             { "textBox1", false },
@@ -16,6 +20,12 @@ namespace WinFormsApp2
             textBox1.KeyPress += CheckKeyPress;
             textBox2.KeyPress += CheckKeyPress;
             textBox3.KeyPress += CheckKeyPress;
+
+            _bindingSource.DataSource = typeof(DatabindTest);
+
+            // TextBox と Label にデータバインドします
+            textBox1.DataBindings.Add("Text", _bindingSource, "Name");
+            label1.DataBindings.Add("Text", _bindingSource, "Value");
         }
 
         private void HandleButtonClick(object sender, EventArgs e)
@@ -44,5 +54,17 @@ namespace WinFormsApp2
                 e.Handled = true;
             }
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            // データソースに新しい Person オブジェクトを追加します
+            _bindingSource.Add(new DatabindTest { Name = "John Doe", Value = 30 });
+        }
+    }
+
+    class DatabindTest
+    {
+        public string Name {get; set;}
+        public int Value { get; set;}
     }
 }
